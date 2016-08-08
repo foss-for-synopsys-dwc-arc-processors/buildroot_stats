@@ -1,0 +1,13 @@
+%table.collapsable
+  %theader
+    %tr
+      %th Name
+      %th Last executions (#{period} days)
+  %tbody
+    - packages.each do |package|
+      %tr
+        %td #{package.name}
+        %td.graph
+          %div.relative_graph
+            - package.last_period_executions(period).each do |tp|
+              %div.graph{style: "left:#{(tp[:start] * 500).to_i}px;width:#{(tp[:width] * 500).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 

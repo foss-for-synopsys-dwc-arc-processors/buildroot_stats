@@ -1,0 +1,25 @@
+%table.collapsable
+  %theader
+    %tr
+      %th Date
+      %th Status
+      %th Commit ID
+      %th Submitter
+      %th Arch
+      %th Failure reason
+      %th Data
+      %th 
+  %tbody
+    - list.each do |elem|
+      %tr
+        %td #{elem.html_date}
+        %td #{elem.status}
+        %td #{elem.commit_id}
+        %td #{elem.submitter}
+        %td #{elem.arch}
+        %td #{elem.failure_reason}
+        %td
+          - elem.data_files.each do |d|
+            %a{href:"#{d.content_url}"} #{d.filename}
+        %td 
+          %a{href: "/test/#{elem.id}"} (packages)

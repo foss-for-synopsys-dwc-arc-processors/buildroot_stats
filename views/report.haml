@@ -1,0 +1,36 @@
+%h1 Report (From #{datetime_to_s(@start_time)} to #{datetime_to_s(@end_time)})
+
+%table
+  %tbody
+    %tr
+      %td Number of packages
+      %td #{@data[:num_packages]}
+    %tr
+      %td Passing
+      %td #{@data[:successes]} (#{@data[:successes].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+    %tr
+      %td Failing
+      %td #{@data[:failures]} (#{@data[:failures].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+    %tr
+      %td Newly Passing
+      %td #{@data[:new_successes]} (#{@data[:new_successes].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+    %tr
+      %td Newly Failing
+      %td #{@data[:new_failures]} (#{@data[:new_failures].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+    %tr
+      %td Never Tested
+      %td #{@data[:never_tested]} (#{@data[:never_tested].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+
+%h3 List of recent tests
+  
+%div.tests
+  = render(:haml, :'tests_list', locals: { list: @tests })
+
+%h3 Package Changes
+
+%div.packages
+  = render(:haml, :'package_changes', locals: { packages: @package_changes, period: @period_days })
+
+%h3 Still failing
+%div.packages
+  = render(:haml, :'package_list', locals: { packages: @failing_packages, period: @period_days })

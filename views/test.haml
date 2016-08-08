@@ -1,0 +1,8 @@
+%h2 Test from #{@test.date} 
+%div.tests
+  = render(:haml, :'tests_list', locals: { list: [@test] })
+
+%h3 Packages
+
+%div.packages
+  = render(:haml, :'package_list', locals: { packages: @test.related_packages, period: 15 })
