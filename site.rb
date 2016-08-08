@@ -101,10 +101,10 @@ get "/report/" do
     new_successes: package_changes.select { |data| data[:nodes][0].passed == true }.count,
   }
 
-  email(to: "cmiranda@synospsys.com",
-	from: "cmiranda@synopsys.com",
-	subject: "Buildroot testing report",
-	body: haml(:report))
+#  email(to: "cmiranda@synospsys.com",
+#	from: "cmiranda@synopsys.com",
+#	subject: "Buildroot testing report",
+#	body: haml(:report))
 
   haml :report
 end
