@@ -50,7 +50,7 @@ configure do
 end
 
 get '/' do
-  @list = BuildrootTest.all(:order => [ :date.desc ])
+  @list = BuildrootTest.all(:limit => 100, :order => [ :date.desc ])
   haml :index
 end
 

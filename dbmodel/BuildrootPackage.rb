@@ -85,7 +85,7 @@ class BuildrootPackage
 
     ret[:nodes].each_with_index do |n,i|
       if(i > 0 && ret[:nodes][i-1].passed != n.passed)
-	puts "HERE => #{ret[:package].name}"
+	#puts "HERE => #{ret[:package].name}"
 	ret[:changed] = true;
       end
     end
