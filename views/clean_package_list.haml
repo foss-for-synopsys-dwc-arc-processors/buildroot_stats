@@ -1,0 +1,15 @@
+%table.collapsable
+  %theader
+    %tr
+      %th Name
+      %th Build on test?
+  %tbody
+    - width = @width || 700.0
+    - test_packages.each do |tp|
+      %tr
+        %td 
+          %a{href: "/package/#{tp.buildroot_package.id}"}
+            #{tp.buildroot_package.name}
+        %td.graph
+          %div.relative_graph{style: "width:#{width}px"}
+            %div.graph{style: "left:0px;width:100px", class: "#{tp.passed ? "green" : (tp.failed ? "red" : "yellow")}", title: "#{tp.html_date}"} 

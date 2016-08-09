@@ -4,10 +4,14 @@
       %th Name
       %th Last executions (#{period} days)
   %tbody
+    - width = @width || 700.0
     - packages.each do |package|
       %tr
-        %td #{package.name}
+        %td 
+          %a{href: "/package/#{package.id}"}
+            #{package.name}
         %td.graph
-          %div.relative_graph
+          %div.relative_graph{style: "width:#{width}px"}
             - package.last_period_executions(period).each do |tp|
-              %div.graph{style: "left:#{(tp[:start] * 500).to_i}px;width:#{(tp[:width] * 500).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 
+              %a{href: "/test/#{tp[:tp].buildroot_test.id}"}
+                %div.graph{style: "left:#{(tp[:start] * width).to_i}px;width:#{(tp[:width] * width).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 

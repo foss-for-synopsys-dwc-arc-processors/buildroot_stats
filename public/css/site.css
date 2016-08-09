@@ -58,6 +58,13 @@ li.added {
         background-color: #FFEDFF;
 }
 
+
+table th {
+	padding: 1px 5px;
+}
+table td {
+	padding: 1px 5px;
+}
 table a {
         color: black;
 }

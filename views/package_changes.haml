@@ -5,6 +5,7 @@
       %th
       %th Last executions (#{period} days)
   %tbody
+    - width = @width || 700.0
     - packages.each do |data|
       - prev = data[:nodes][-1]
       - nodes = data[:nodes][0..-2]
@@ -12,10 +13,11 @@
       %tr
         %td #{package.name} (#{change_helper(data)})
         %td
-          %div{style: "left:-10px;width:10px", class: "#{prev.passed ? "green" : (prev.failed ? "red" : "yellow")}", title: "#{prev.html_date}"} 
+          %a{href: "/test/#{prev.buildroot_test.id}"}
+            %div{style: "left:0px; width:10px", class: "#{prev.passed ? "green" : (prev.failed ? "red" : "yellow")}", title: "#{prev.html_date}"} 
         %td.graph
-          %div.relative_graph
+          %div.relative_graph{style: "width:#{width}px"}
             %div.graph{style: "left:-10px;width:10px", class: "#{prev.passed ? "green" : (prev.failed ? "red" : "yellow")}", title: "#{prev.html_date}"} 
             - prepare_for_display(nodes, @start_time, @end_time).each do |tp|
               %a{href: "/test/#{tp[:tp].buildroot_test.id}"}
-                %div.graph{style: "left:#{(tp[:start] * 500).to_i}px;width:#{(tp[:width] * 500).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 
+                %div.graph{style: "left:#{(tp[:start] * width).to_i}px;width:#{(tp[:width] * width).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 

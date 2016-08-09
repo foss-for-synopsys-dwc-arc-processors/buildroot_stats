@@ -64,6 +64,11 @@ get "/packages/" do
   haml :packages
 end
 
+get "/package/:id" do
+  @package = BuildrootPackage.get(params[:id])
+  haml :package
+end
+
 get "/report/" do
   @start_time = params['start'] ? Time.new(params['start']) : Time.now - (7*24*60*60) 
   @end_time = params['end'] ? Time.new(params['end']) : Time.now

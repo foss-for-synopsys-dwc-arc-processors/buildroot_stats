@@ -93,5 +93,9 @@ class BuildrootPackage
     return ret
   end
 
+  def related_tests
+    self.test_packages.map { |tp| tp.buildroot_test }
+  end
+
 end
 
