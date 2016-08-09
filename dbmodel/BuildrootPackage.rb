@@ -69,7 +69,7 @@ class BuildrootPackage
     }
     
     last_node = false
-    tests = test_packages.all(unknown_result: false, order: [:date.desc])
+    tests = test_packages.all(unknown_result: false, :date.gte => start_time, :date.lte => end_time, order: [:date.desc])
     tests.each do |test|
       if(test.date.to_time >= start_time && test.date.to_time <= end_time)
 	if(test.unknown_result == false)
