@@ -60,6 +60,24 @@ class BuildrootPackage
     test_packages.first(unknown_result: false, order: [:date.desc])
   end
 
+  def self.packages_that_changed_result_in_period(start_time, end_time)
+    ret = {}
+    tests = TestPackage.all(unknown_result: false, :date.gte => start_time, :date.lte => end_time, order: [:date.desc])
+
+    tests.each do |tp|
+      data = ret[tp.buildroot_package] || { nodes: [], changed: false }
+      data[:nodes].push(tp)
+      if(data[:nodes].count >= 2)
+        # If has different result
+        data[:changed] = true if(data[:nodes][-2].passed != data[:nodes][-1].passed)
+      end
+      ret[tp.buildroot_package] = data
+    end
+
+    ret.select! { |k, a| a[:changed] == true }
+    return ret
+  end
+  
   def changed_in_period(start_time, end_time)
     #puts self
     ret = {

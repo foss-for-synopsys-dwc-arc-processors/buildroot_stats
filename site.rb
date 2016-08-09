@@ -80,10 +80,13 @@ get "/report/" do
   @tests = BuildrootTest.all(:date.gte => @start_time, :date.lte => @end_time, :order => [ :date.desc ])
 
   # Prepare package changed
-  package_names = @tests.map { |a| a.related_packages }.flatten.map { |b| b.name }
-  package_changes = BuildrootPackage.all(:name => package_names, :order => [ :name.asc ])
-  package_changes = package_changes.map { |a| a.changed_in_period(@start_time, @end_time) }
-  package_changes = package_changes.select { |a| a[:changed] == true }
+  #package_names = @tests.map { |a| a.related_packages }.flatten.map { |b| b.name }
+  #package_changes = BuildrootPackage.all(:name => package_names, :order => [ :name.asc ])
+  #package_changes = package_changes.map { |a| a.changed_in_period(@start_time, @end_time) }
+  #package_changes = package_changes.select { |a| a[:changed] == true }
+  #@package_changes = package_changes
+
+  package_changes = BuildrootPackage.packages_that_changed_result_in_period(@start_time, @end_time)
   @package_changes = package_changes
 
   package_status = packages_list.map do |p|
@@ -102,8 +105,8 @@ get "/report/" do
     successes: package_status.select { |p| p[:passed] == true }.count,
     failures: package_status.select { |p| p[:failed] == true }.count,
     never_tested: package_status.select { |p| p[:never_tested] == true }.count,
-    new_failures: package_changes.select { |data| data[:nodes][0].failed == true }.count,
-    new_successes: package_changes.select { |data| data[:nodes][0].passed == true }.count,
+    new_failures: package_changes.values.select { |data| data[:nodes][0].failed == true }.count,
+    new_successes: package_changes.values.select { |data| data[:nodes][0].passed == true }.count,
   }
 
 #  email(to: "cmiranda@synospsys.com",
