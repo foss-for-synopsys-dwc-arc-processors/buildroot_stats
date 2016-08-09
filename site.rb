@@ -70,14 +70,19 @@ get "/package/:id" do
 end
 
 get "/report/" do
+  puts "Here1"
   @start_time = params['start'] ? Time.new(params['start']) : Time.now - (7*24*60*60) 
   @end_time = params['end'] ? Time.new(params['end']) : Time.now
+  puts "Here2"
 
   return "#{@end_time}" unless @start_time || @end_time
 
+  puts "Here3"
   packages_list = BuildrootPackage.all()
+  puts "Here4"
   @period_days = ((@end_time - @start_time) / (24*60*60)).to_i
   @tests = BuildrootTest.all(:date.gte => @start_time, :date.lte => @end_time, :order => [ :date.desc ])
+  puts "Here5"
 
   # Prepare package changed
   #package_names = @tests.map { |a| a.related_packages }.flatten.map { |b| b.name }
@@ -89,21 +94,39 @@ get "/report/" do
   package_changes = BuildrootPackage.packages_that_changed_result_in_period(@start_time, @end_time)
   @package_changes = package_changes
 
-  package_status = packages_list.map do |p|
-    test = p.test_packages.first(:unknown_result => false, :limit => 1, :order => [ :date.desc ])
-
-    ret = { passed: false, failed: false, never_tested: true, test_package: test, package: p }
-    if(test != nil)
-      ret = { passed: test.passed, failed: test.failed, never_tested: false, test_package: test, package: p }
+  puts "Here6"
+  tps = TestPackage.all(:fields => [:buildroot_package_id, :passed, :failed, :date], :unique => true, :unknown_result => false, :order => [ :date.desc ])
+  package_status = {}
+  tps.each do |tp|
+    if(package_status[tp.buildroot_package] == nil)
+      package_status[tp.buildroot_package] = { passed: tp.passed, failed: tp.failed, never_tested: false, test_package: tp, package: tp.buildroot_package }
     end
-    ret
   end
-  @failing_packages = package_status.select { |p| p[:failed] == true}.map { |p| p[:package] }
+  packages_list.each do |p|
+    if(package_status[p] == nil)
+      ret = { passed: false, failed: false, never_tested: true, test_package: nil, package: p }
+    end
+  end
+
+
+  #package_status = packages_list.map do |p|
+  #  test = tps.all(:buildroot_package => p).first
+  #  #p.test_packages.first(:unknown_result => false, :limit => 1, :order => [ :date.desc ])
+
+  #  ret = { passed: false, failed: false, never_tested: true, test_package: test, package: p }
+  #  if(test != nil)
+  #    ret = { passed: test.passed, failed: test.failed, never_tested: false, test_package: test, package: p }
+  #  end
+  #  ret
+  #end
+  puts "Here7"
+  @failing_packages = package_status.select { |k, p| p[:failed] == true}.map { |k, p| p[:package] }
+  puts "Here8"
 
   @data = {
     num_packages: packages_list.count,
-    successes: package_status.select { |p| p[:passed] == true }.count,
-    failures: package_status.select { |p| p[:failed] == true }.count,
+    successes: package_status.select { |k, p| p[:passed] == true }.count,
+    failures: package_status.select { |k, p| p[:failed] == true }.count,
     never_tested: package_status.select { |p| p[:never_tested] == true }.count,
     new_failures: package_changes.values.select { |data| data[:nodes][0].failed == true }.count,
     new_successes: package_changes.values.select { |data| data[:nodes][0].passed == true }.count,

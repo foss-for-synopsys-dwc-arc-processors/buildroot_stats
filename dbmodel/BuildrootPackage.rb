@@ -67,7 +67,7 @@ class BuildrootPackage
     tests.each do |tp|
       data = ret[tp.buildroot_package] || { nodes: [], changed: false }
       data[:nodes].push(tp)
-      if(data[:nodes].count >= 2)
+      if(data[:changed] == false && data[:nodes].count >= 2)
         # If has different result
         data[:changed] = true if(data[:nodes][-2].passed != data[:nodes][-1].passed)
       end
