@@ -95,18 +95,20 @@ get "/report/" do
   @package_changes = package_changes
 
   puts "Here6"
-  tps = TestPackage.all(:fields => [:buildroot_package_id, :passed, :failed, :date], :unique => true, :unknown_result => false, :order => [ :date.desc ])
-  package_status = {}
-  tps.each do |tp|
-    if(package_status[tp.buildroot_package] == nil)
-      package_status[tp.buildroot_package] = { passed: tp.passed, failed: tp.failed, never_tested: false, test_package: tp, package: tp.buildroot_package }
-    end
-  end
-  packages_list.each do |p|
-    if(package_status[p] == nil)
-      ret = { passed: false, failed: false, never_tested: true, test_package: nil, package: p }
-    end
-  end
+  
+  packages = BuildrootPackage.all(:order => [:name.asc])
+  #tps = TestPackage.all(:fields => [:buildroot_package_id, :passed, :failed, :date], :unique => true, :unknown_result => false, :order => [ :date.desc ])
+  #package_status = {}
+  #tps.each do |tp|
+  #  if(package_status[tp.buildroot_package] == nil)
+  #    package_status[tp.buildroot_package] = { passed: tp.passed, failed: tp.failed, never_tested: false, test_package: tp, package: tp.buildroot_package }
+  #  end
+  #end
+  #packages_list.each do |p|
+  #  if(package_status[p] == nil)
+  #    ret = { passed: false, failed: false, never_tested: true, test_package: nil, package: p }
+  #  end
+  #end
 
 
   #package_status = packages_list.map do |p|
@@ -120,14 +122,18 @@ get "/report/" do
   #  ret
   #end
   puts "Here7"
-  @failing_packages = package_status.select { |k, p| p[:failed] == true}.map { |k, p| p[:package] }
+  @failing_packages = packages.select { |p| p.latest_test && p.latest_test.failed == true }
   puts "Here8"
+
+  successes = packages.select { |p| p.latest_test && p.latest_test.passed == true }.count
+  failures = packages.select { |p| p.latest_test && p.latest_test.failed == true }.count
+  never_built = packages.select { |p| p.latest_test == nil }.count
 
   @data = {
     num_packages: packages_list.count,
-    successes: package_status.select { |k, p| p[:passed] == true }.count,
-    failures: package_status.select { |k, p| p[:failed] == true }.count,
-    never_tested: package_status.select { |p| p[:never_tested] == true }.count,
+    successes: successes,
+    failures: failures,
+    never_tested: never_built, #package_status.select { |p| p[:never_tested] == true }.count,
     new_failures: package_changes.values.select { |data| data[:nodes][0].failed == true }.count,
     new_successes: package_changes.values.select { |data| data[:nodes][0].passed == true }.count,
   }

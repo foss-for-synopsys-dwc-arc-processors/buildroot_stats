@@ -1,10 +1,11 @@
 class BuildrootPackage
   include DataMapper::Resource
-  include Comparable
 
   property :id,         Serial    # An auto-increment integer key
   property :name,	String, :unique => true
 
+  #has 1, :latest_test, 'TestPackage'
+  belongs_to :latest_test, 'TestPackage', :required => false
   has n, :test_packages
 
   def might_name_be_for_this_package?(name_p)

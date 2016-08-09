@@ -52,8 +52,12 @@ def scrape_for_package_info(buildroot_test)
   text.each_line do |l|
     if(l =~ /^BR2_PACKAGE_([^=]+)=y/)
       name = $1
-      package = BuildrootPackage.all(name: name).first || BuildrootPackage.new
-      package.name = name
+      package = BuildrootPackage.all(name: name).first 
+      if(!package)
+	package = BuildrootPackage.new
+	package.name = name
+	package.latest_test = nil
+      end
 
       test_package = TestPackage.new()
       test_package.buildroot_test = buildroot_test
@@ -72,6 +76,12 @@ def scrape_for_package_info(buildroot_test)
 
       package.save!
       test_package.save!
+
+      # Don't set as latest_test if it got unknown result
+      if(test_package.unknown_result == false && (package.latest_test == nil || test_package.date > package.latest_test.date))
+	package.latest_test = test_package
+	package.save!
+      end
     end
   end
 end
