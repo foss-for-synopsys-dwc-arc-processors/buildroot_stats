@@ -7,19 +7,19 @@
       %td #{@data[:num_packages]}
     %tr
       %td Passing
-      %td #{@data[:successes]} (#{@data[:successes].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+      %td #{@data[:successes]} (#{(@data[:successes].to_f/@data[:num_packages].to_f*100.0).round(2)}%)
     %tr
       %td Failing
-      %td #{@data[:failures]} (#{@data[:failures].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+      %td #{@data[:failures]} (#{(@data[:failures].to_f/@data[:num_packages].to_f*100.0).round(2)}%)
     %tr
       %td Newly Passing
-      %td #{@data[:new_successes]} (#{@data[:new_successes].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+      %td #{@data[:new_successes]} (#{(@data[:new_successes].to_f/@data[:num_packages].to_f*100.0).round(2)}%)
     %tr
       %td Newly Failing
-      %td #{@data[:new_failures]} (#{@data[:new_failures].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+      %td #{@data[:new_failures]} (#{(@data[:new_failures].to_f/@data[:num_packages].to_f*100.0).round(2)}%)
     %tr
       %td Never Tested
-      %td #{@data[:never_tested]} (#{@data[:never_tested].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
+      %td #{@data[:never_tested]} (#{(@data[:never_tested].to_f/@data[:num_packages].to_f*100.0).round(2)}%)
 
 %h3 Package Changes
 %div.packages
