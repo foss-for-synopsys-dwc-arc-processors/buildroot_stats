@@ -1,12 +1,14 @@
 !!!
 %html
   %head
-    %link{href:"http://nl20droid2:9999/vendor/bootstrap/css/bootstrap.min.css", rel:"stylesheet"}
     %title Buildroot test results
-    %link(rel="stylesheet" href="http://nl20droid2:9999/css/site.css")
-    %link(href="http://nl20droid2:9999/vendor/bootstrap/css/bootstrap.css" rel="stylesheet")
-    %script{:type => "text/javascript", :src  => "http://nl20droid2:9999/vendor/jquery-1.9.1.min.js"}
-    %script{:type => "text/javascript", :src  => "http://nl20droid2:9999/vendor/bootstrap/js/bootstrap.js"}
+    %style
+      = `cat public/vendor/bootstrap/css/bootstrap.min.css`
+      = `cat public/css/site.css`
+      = `cat public/vendor/bootstrap/css/bootstrap.css`
+    %script
+      = `cat public/vendor/jquery-1.9.1.min.js`
+      = `cat public/vendor/bootstrap/js/bootstrap.js`
   %body
     %div.container
       = yield
