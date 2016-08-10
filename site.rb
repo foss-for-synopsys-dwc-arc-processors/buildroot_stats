@@ -159,7 +159,7 @@ end
 
 
 
-get "/update_db" do
+get "/update_db/" do
   begin
     scrape_site()
   rescue
