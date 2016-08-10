@@ -71,8 +71,8 @@ end
 
 get "/report/" do
   puts "Here1"
-  @start_time = params['start'] ? Time.new(params['start']) : Time.now - (7*24*60*60) 
-  @end_time = params['end'] ? Time.new(params['end']) : Time.now
+  @start_time = params['start'] ? Time.at(params['start'].to_i) : Time.now - (7*24*60*60) 
+  @end_time = params['end'] ? Time.at(params['end'].to_i) : Time.now
   puts "Here2"
 
   return "#{@end_time}" unless @start_time || @end_time
@@ -160,5 +160,10 @@ end
 
 
 get "/update_db" do
-
+  begin
+    scrape_site()
+  rescue
+    return "FAIL"
+  end
+  return "OK"
 end

@@ -160,4 +160,6 @@ def traverse_page()
   end
 end
 
-traverse_page()
+def scrape_site() 
+  traverse_page()
+end
