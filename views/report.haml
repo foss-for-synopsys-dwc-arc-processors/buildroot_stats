@@ -21,16 +21,15 @@
       %td Never Tested
       %td #{@data[:never_tested]} (#{@data[:never_tested].to_f/@data[:num_packages].to_f*100.0.round(2)}%)
 
-%h3 List of recent tests
-  
-%div.tests
-  = render(:haml, :'tests_list', locals: { list: @tests })
-
 %h3 Package Changes
-
 %div.packages
   = render(:haml, :'package_changes', locals: { packages: @package_changes, period: @period_days })
 
 %h3 Still failing
 %div.packages
   = render(:haml, :'package_list', locals: { packages: @failing_packages, period: @period_days })
+
+%h3 List of recent tests
+  
+%div.tests
+  = render(:haml, :'tests_list', locals: { list: @tests })

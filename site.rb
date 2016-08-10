@@ -143,7 +143,7 @@ get "/report/" do
 #	subject: "Buildroot testing report",
 #	body: haml(:report))
 
-  haml :report
+  haml :report, :layout => :email_layout
 end
 
 get "/send_email/" do

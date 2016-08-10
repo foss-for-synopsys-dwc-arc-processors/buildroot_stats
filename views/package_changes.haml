@@ -5,7 +5,7 @@
       %th
       %th Last executions (#{period} days)
   %tbody
-    - width = @width || 700.0
+    - width = @width || 850.0
     - packages.each do |package, data|
       - prev = data[:nodes][-1]
       - nodes = data[:nodes][0..-2]
