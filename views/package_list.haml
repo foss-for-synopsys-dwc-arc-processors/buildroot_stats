@@ -8,10 +8,10 @@
     - packages.each do |package|
       %tr
         %td 
-          %a{href: "/package/#{package.id}"}
+          %a{href: "#{base_url}/package/#{package.id}"}
             #{package.name}
         %td.graph
           %div.relative_graph{style: "width:#{width}px"}
             - package.last_period_executions(period).each do |tp|
-              %a{href: "/test/#{tp[:tp].buildroot_test.id}"}
+              %a{href: "#{base_url}/test/#{tp[:tp].buildroot_test.id}"}
                 %div.graph{style: "left:#{(tp[:start] * width).to_i}px;width:#{(tp[:width] * width).to_i}px", class: "#{tp[:tp].passed ? "green" : (tp[:tp].failed ? "red" : "yellow")}", title: "#{tp[:tp].html_date}"} 

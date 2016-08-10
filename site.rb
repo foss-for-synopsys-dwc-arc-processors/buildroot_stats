@@ -5,6 +5,7 @@ require 'uri'
 require 'sinatra_mailer'
 
 load 'dbSetup.rb'
+load 'scrapper.rb'
 
 #set :public_folder, File.dirname(__FILE__) + '/public'
 set :public_folder, 'public'
@@ -18,6 +19,10 @@ Sinatra::Mailer.config = {
 end
 
 helpers do 
+  def base_url
+    @base_url ||= "#{request.env['rack.url_scheme']}://#{request.env['HTTP_HOST']}"
+  end
+
   def datetime_to_s(date)
     date.strftime("%Y-%m-%d %H:%M")
   end
