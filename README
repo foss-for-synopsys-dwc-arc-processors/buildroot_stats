@@ -1,0 +1,35 @@
+BUILDROOT PACKAGE BUILD STATS
+
+This repository is a site/scrapper to autobuild.buildroot.net.
+It creates a web-interface to view package building information 
+for the different buildroot executions provided through the site.
+
+It works by parsing the execution config file, identifying which 
+packages were built and setting the database accordingly to package
+build or failure.
+
+This project filters database recovering for ARC architecture. For
+a different architecture you should rename it in scrapper.rb.
+
+INSTALL:
+
+Setup ruby usign rvm:
+
+ - Install RVM (This is a ruby version manager)
+ - Execute "rvm install 2.2.1" (other versions are possible as well)
+ - Execute "rvm use 2.2.1"
+ - On the directory execute "gem install bundler"
+ - Execute "bundle install" (this will install the required ruby libraries
+			     listed in Gemfile)
+ - Execute "ruby site.rb -p 9999" (This will start the server on port 9999)
+ - Visit "http://localhost:9999/update_db/" to start collecting data on the
+ database.
+
+Available locations:
+
+ http://localhost:9999/ : Only the first 100 entries are shown at the
+			  moment, pagination is still required.
+
+ http://localhost:9999/report/ : Creates report similar to the email one.
+				 ./gen_report.rb that generates the report and
+				 mails it between specific dates.

@@ -18,21 +18,28 @@ time_start = time_end - (nr_days * 24*60*60)
 #time_start = time_start.strftime("%Y-%m-%d %H:%M")
 #time_end = time_end.strftime("%Y-%m-%d %H:%M")
 
-cmd = "curl http://localhost:4567/report/?start=#{time_start.to_i}&end=#{time_end.to_i}"
+cmd = "curl http://nl20droid2:9999/report/?start=#{time_start.to_i}&end=#{time_end.to_i}"
 
-puts `#{cmd}`
+puts cmd
 
+from="bla@bla.com"
+to=[
+	"bla@bla.com",
+]
 
-from="cmiranda@synopsys.com"
-to="cmiranda@synopsys.com"
+f = File.open("/tmp/report", "w")
 
-`echo "From: ${from}"; > /tmp/report_email`
-`echo "To: ${to}"; >> /tmp/report_email`
-`echo "Subject: #{message_prefix} Buildroot composed report"; >> /tmp/report_email`
-`echo "Content-Type: text/html"; >> /tmp/report_email`
-`echo "MIME-Version: 1.0"; >> /tmp/report_email`
-`echo ""; >> /tmp/report_email`
-`curl "http://localhost:9999/report/" >> /tmp/report_email`
+html = `#{cmd}`
 
-`cat /tmp/report_email | sendmail -t`
+f.puts("From: #{from}")
+to.each do |t|
+	f.puts("To: #{t}")
+end
+f.puts("Subject: #{message_prefix} Buildroot composed report")
+f.puts("Content-Type: text/html")
+f.puts("MIME-Version: 1.0")
+f.puts("")
+f.puts(html)
+f.close
+`( cat /tmp/report ) | sendmail -t`
 
