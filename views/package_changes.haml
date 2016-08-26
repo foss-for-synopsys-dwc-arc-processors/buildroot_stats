@@ -2,18 +2,14 @@
   %theader
     %tr
       %th Name
-      %th
       %th Last executions (#{period} days)
   %tbody
     - width = @width || 850.0
     - packages.each do |package, data|
       - prev = data[:nodes][-1]
-      - nodes = data[:nodes][0..-2]
+      - nodes = data[:nodes][0..-1]
       %tr
         %td #{package.name} (#{change_helper(data)})
-        %td{style: "position:relative"}
-          %a{href: "#{base_url}/test/#{prev.buildroot_test.id}"}
-            %div.graph{style: "left:0px; width:10px", class: "#{prev.passed ? "green" : (prev.failed ? "red" : "yellow")}", title: "#{prev.html_date}"} 
         %td.graph
           %div.relative_graph{style: "width:#{width}px"}
             - prepare_for_display(nodes, @start_time, @end_time).each do |tp|

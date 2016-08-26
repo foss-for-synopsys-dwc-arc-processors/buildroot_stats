@@ -87,6 +87,8 @@ get "/report/" do
   puts "Here4"
   @period_days = ((@end_time - @start_time) / (24*60*60)).to_i
   @tests = BuildrootTest.all(:date.gte => @start_time, :date.lte => @end_time, :order => [ :date.desc ])
+  #count = @tests.count
+  #@tests = BuildrootTest.all(:date.lte => @end_time, :limit => count+1, :order => [ :date.desc ])
   puts "Here5"
 
   # Prepare package changed
@@ -132,13 +134,13 @@ get "/report/" do
 
   successes = packages.select { |p| p.latest_test && p.latest_test.passed == true }.count
   failures = packages.select { |p| p.latest_test && p.latest_test.failed == true }.count
-  never_built = packages.select { |p| p.latest_test == nil }.count
+  @never_built = packages.select { |p| p.latest_test == nil }
 
   @data = {
     num_packages: packages_list.count,
     successes: successes,
     failures: failures,
-    never_tested: never_built, #package_status.select { |p| p[:never_tested] == true }.count,
+    never_tested: @never_built.count, #package_status.select { |p| p[:never_tested] == true }.count,
     new_failures: package_changes.values.select { |data| data[:nodes][0].failed == true }.count,
     new_successes: package_changes.values.select { |data| data[:nodes][0].passed == true }.count,
   }

@@ -22,9 +22,16 @@ cmd = "curl http://nl20droid2:9999/report/?start=#{time_start.to_i}&end=#{time_e
 
 puts cmd
 
-from="bla@bla.com"
+from="cmiranda@synopsys.com"
 to=[
-	"bla@bla.com",
+	"fbedard@synopsys.com",
+	"abrodkin@synopsys.com",
+	"akolesov@synopsys.com",
+	"claziss@synopsys.com",
+	"cmiranda@synopsys.com", 
+	"vgupta@synopsys.com",
+	"paltsev@synopsys.com",
+	"vzakhar@synopsys.com",
 ]
 
 f = File.open("/tmp/report", "w")

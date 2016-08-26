@@ -1,0 +1,5 @@
+%ul
+  - packages.each do |package|
+    %li
+      %a{href: "#{base_url}/package/#{package.id}"}
+        #{package.name}

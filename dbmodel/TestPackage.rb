@@ -5,7 +5,7 @@ class TestPackage
   property :passed,	Boolean, :default => false
   property :failed,	Boolean, :default => false
   property :unknown_result, Boolean, :default => false
-  property :date,	DateTime
+  property :date,	DateTime, :index => true
 
   belongs_to :buildroot_test
   belongs_to :buildroot_package

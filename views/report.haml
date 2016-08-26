@@ -29,6 +29,10 @@
 %div.packages
   = render(:haml, :'package_list', locals: { packages: @failing_packages, period: @period_days })
 
+%h3 Never built
+%div.packages
+  = render(:haml, :'package_list_names', locals: { packages: @never_built })
+
 %h3 List of recent tests
   
 %div.tests

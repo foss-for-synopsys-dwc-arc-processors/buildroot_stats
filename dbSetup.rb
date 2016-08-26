@@ -4,7 +4,7 @@ require 'dm-migrations'
 require 'ruby-progressbar'
 
 # If you want the logs displayed you have to do this before the call to setup
-#DataMapper::Logger.new($stdout, :debug)
+DataMapper::Logger.new($stdout, :debug)
 
 # An in-memory Sqlite3 connection:
 #DataMapper.setup(:default, 'sqlite::memory:')
@@ -12,7 +12,7 @@ require 'ruby-progressbar'
 # A Sqlite3 connection to a persistent database
 
 file_root = File.dirname(File.absolute_path(__FILE__))
-db_file = ENV['DB_FILE'] || "#{file_root}/isa.db"
+db_file = ENV['DB_FILE'] || "#{file_root}/test_data.db"
 #puts "db_file = #{db_file}"
 
 #DataMapper::Logger.new(STDOUT, :debug)

@@ -38,7 +38,9 @@ class BuildrootPackage
   end
 
   def last_period_executions(period)
-    tests = test_packages.all(unknown_result: false, :date.gte => Time.now-(period*24*60*60), :date.lte => Time.now, order: [:date.desc])
+    tests = test_packages.all(unknown_result: false, :date.gte => Time.now-(period*24*60*60), :date.lte => Time.now, order: [:date.desc]).to_a
+    last_before = test_packages.all(unknown_result: false, :date.lt => Time.now-(period*24*60*60), order: [:date.desc], :limit => 1)
+    tests.push(last_before.first) if last_before.count > 0
       
     last_time = Time.now
     now = Time.now
@@ -64,16 +66,45 @@ class BuildrootPackage
   def self.packages_that_changed_result_in_period(start_time, end_time)
     ret = {}
     tests = TestPackage.all(unknown_result: false, :date.gte => start_time, :date.lte => end_time, order: [:date.desc])
+    count = tests.count
+    before_period = TestPackage.all(unknown_result: false, :date.lte => start_time, :limit => 1, order: [:date.desc])
+    last_before_start = repository(:default).adapter.select(
+      "SELECT MAX(date), tp1.id, name FROM test_packages AS tp1 \
+	LEFT JOIN buildroot_packages AS b ON b.id = tp1.buildroot_package_id \
+	WHERE unknown_result = 'f' AND date < '#{start_time.iso8601}' GROUP BY buildroot_package_id ORDER BY date DESC")
 
+
+last_before_start.each do |a|
+    puts a 
+end
     tests.each do |tp|
-      data = ret[tp.buildroot_package] || { nodes: [], changed: false }
+      data = ret[tp.buildroot_package] || { nodes: [], changed: false, last_before: nil }
+	
+      last = last_before_start.select{|a| a.name == tp.buildroot_package.name }
+      data[:last_before] = last.first.id if(last.count == 1)
+
       data[:nodes].push(tp)
       if(data[:changed] == false && data[:nodes].count >= 2)
         # If has different result
+	puts "HERE #{tp.buildroot_package.name} #{data[:nodes][-2].passed} #{data[:nodes][-1].passed}"
         data[:changed] = true if(data[:nodes][-2].passed != data[:nodes][-1].passed)
       end
       ret[tp.buildroot_package] = data
     end
+ 
+    # Change last_before to a dbmodel reference
+    ret.map do |k, v|
+      if(v[:last_before] != nil)
+        v[:nodes].push(TestPackage.get(v[:last_before]))
+        v[:changed] = true if(v[:nodes][-2].passed != v[:nodes][-1].passed)
+      end
+    end
+
+    #ret.each do |k, v|
+    #    puts "#{k}: changed: #{v[:changed]}"
+    #    puts "  before: #{v[:last_before].date} #{v[:last_before].passed}"
+    #    v[:nodes].each { |tp| puts "   #{tp.date}" }
+    #end
 
     ret.select! { |k, a| a[:changed] == true }
     return ret
@@ -89,6 +120,8 @@ class BuildrootPackage
     
     last_node = false
     tests = test_packages.all(unknown_result: false, :date.gte => start_time, :date.lte => end_time, order: [:date.desc])
+    count = tests.count
+    tests = test_packages.all(unknown_result: false, :date.lte => end_time, :limit => count+1, order: [:date.desc])
     tests.each do |test|
       if(test.date.to_time >= start_time && test.date.to_time <= end_time)
 	if(test.unknown_result == false)
