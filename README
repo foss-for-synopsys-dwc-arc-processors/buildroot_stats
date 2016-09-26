@@ -10,6 +10,8 @@ build or failure.
 
 This project filters database recovering for ARC architecture. For
 a different architecture you should rename it in scrapper.rb.
+Later information for all architectures can also be recovered and 
+added to the database.
 
 INSTALL:
 
@@ -24,6 +26,8 @@ Setup ruby usign rvm:
  - Execute "ruby site.rb -p 9999" (This will start the server on port 9999)
  - Visit "http://localhost:9999/update_db/" to start collecting data on the
  database.
+ - In order to keep it updating the database please create a cron task with a
+ curl or wget access to the update_db link.
 
 Available locations:
 
@@ -33,3 +37,14 @@ Available locations:
  http://localhost:9999/report/ : Creates report similar to the email one.
 				 ./gen_report.rb that generates the report and
 				 mails it between specific dates.
+
+Scripts included;
+ ./gen_report.rb : This script generates a report with the latest buildroot
+		   builds in the database and sends it through email.
+		   For now the list of emails and origin are hardcoded in
+		   script. Please do not use it as is.
+
+		   Usage examples:
+		    ./gen_report.rb 1 Daily
+		    ./gen_report.rb 7 Weekly
+		    ./get_report.rb 30 Monthly
