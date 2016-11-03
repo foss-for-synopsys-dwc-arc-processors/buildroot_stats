@@ -29,7 +29,7 @@ HEADER_TO_FIELD_NAME = {
   "Status" =>	      { field: "status"		, code: lambda { |node| node.text } },
   "Commit ID" =>      { field: "commit_id"	, code: lambda { |node| node.text } },
   "Submitter" =>      { field: "submitter"	, code: lambda { |node| node.text } },
-  "Arch" =>	      { field: "arch"		, code: lambda { |node| node.text } },
+  "Arch/Subarch" =>   { field: "arch"		, code: lambda { |node| node.text } },
   "Failure reason" => { field: "failure_reason"	, code: lambda { |node| node.text } },
   "Data" =>	      { field: nil		, 
 			code: lambda do |db, node|
@@ -125,8 +125,7 @@ def scrape_test_information(page)
   
       #a = BuildrootTest.all(date: br_test.date)
       #puts a
-  
-      if(br_test.arch == "arc")
+      if(br_test.arch =~ /^arc/)
 	print " (ARC)"
 	begin
       	  br_test.save!
@@ -155,7 +154,8 @@ def traverse_page()
 
   while(do_next)
     page = "#{MAIN_PAGE}?start=#{start}"
-    do_next = scrape_test_information(page) != nil
+    ret = scrape_test_information(page)
+    do_next = ret != nil
     start += 50
   end
 end
